@@ -4,6 +4,7 @@ import {
   updateCity,
   deleteCity,
   searchCitiesByName,
+  searchCitiesWithExternalData,
   getAllCities,
 } from "@/services/cities.service";
 import { CityError } from "@/types/errors";
@@ -34,7 +35,7 @@ router.get("/search", async (req, res) => {
     if (!req.query.name || typeof req.query.name !== "string") {
       return res.status(400).json({ error: "Query param 'name' is required" });
     }
-    const cities = await searchCitiesByName(req.query.name);
+    const cities = await searchCitiesWithExternalData(req.query.name);
     res.json(cities);
   } catch (e) {
     const errorMessage = getErrorMessage(e);

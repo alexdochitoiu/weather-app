@@ -1,6 +1,7 @@
 import { db } from "@/db/connection";
 import { City } from "@/types/city";
 import { CityError } from "@/types/errors";
+import { ExternalApisService } from "./external-apis.service";
 
 export function addCity(city: City): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -49,6 +50,62 @@ export function searchCitiesByName(name: string): Promise<City[]> {
       resolve(rows as City[]);
     });
   });
+}
+
+export async function searchCitiesWithExternalData(name: string): Promise<City[]> {
+  // First, get cities from database
+  const cities = await searchCitiesByName(name);
+  
+  // Get countries data for mapping country codes
+  let countriesData;
+  try {
+    countriesData = await ExternalApisService.getCountriesData();
+  } catch (error) {
+    console.warn('Failed to fetch countries data, returning cities without external data');
+    return cities;
+  }
+
+  // Enhance each city with external data
+  const enhancedCities = await Promise.all(
+    cities.map(async (city) => {
+      try {
+        // Find country data
+        const countryData = ExternalApisService.findCountryByName(countriesData, city.country);
+        
+        // Get weather data
+        const weatherData = await ExternalApisService.getWeatherData(
+          city.name,
+          countryData?.cca2
+        );
+
+        // Create enhanced city object
+        const enhancedCity: City = {
+          ...city,
+          country_code_2: countryData?.cca2,
+          country_code_3: countryData?.cca3,
+          currency_code: countryData ? ExternalApisService.getMainCurrency(countryData) || undefined : undefined,
+          flag: countryData?.flags?.png,
+        };
+
+        // Add weather data if available
+        if (weatherData) {
+          enhancedCity.weather = {
+            temperature: weatherData.main.temp,
+            description: weatherData.weather[0]?.description || 'Unknown',
+            humidity: weatherData.main.humidity,
+            wind_speed: weatherData.wind.speed,
+          };
+        }
+
+        return enhancedCity;
+      } catch (error) {
+        console.warn(`Failed to enhance city ${city.name} with external data:`, error);
+        return city; // Return original city if enhancement fails
+      }
+    })
+  );
+
+  return enhancedCities;
 }
 
 
