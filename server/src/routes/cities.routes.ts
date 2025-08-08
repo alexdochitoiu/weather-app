@@ -4,6 +4,7 @@ import {
   updateCity,
   deleteCity,
   searchCitiesByName,
+  getAllCities,
 } from "@/services/cities.service";
 import { CityError } from "@/types/errors";
 import { getErrorMessage } from "@/utils/error";
@@ -16,6 +17,32 @@ router.post("/", async (req, res) => {
     res.status(201).json({ id });
   } catch (e) {
     res.status(500).json({ error: getErrorMessage(e) });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const cities = await getAllCities();
+    res.json(cities);
+  } catch (e) {
+    res.status(500).json({ error: getErrorMessage(e) });
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    if (!req.query.name || typeof req.query.name !== "string") {
+      return res.status(400).json({ error: "Query param 'name' is required" });
+    }
+    const cities = await searchCitiesByName(req.query.name);
+    res.json(cities);
+  } catch (e) {
+    const errorMessage = getErrorMessage(e);
+    if (errorMessage === CityError.NotFound) {
+      res.status(404).json({ error: CityError.NotFound });
+    } else {
+      res.status(500).json({ error: errorMessage });
+    }
   }
 });
 
@@ -39,23 +66,6 @@ router.delete("/:id", async (req, res) => {
   try {
     await deleteCity(id);
     res.json({ deleted: true });
-  } catch (e) {
-    const errorMessage = getErrorMessage(e);
-    if (errorMessage === CityError.NotFound) {
-      res.status(404).json({ error: CityError.NotFound });
-    } else {
-      res.status(500).json({ error: errorMessage });
-    }
-  }
-});
-
-router.get("/search", async (req, res) => {
-  try {
-    if (!req.query.name || typeof req.query.name !== "string") {
-      return res.status(400).json({ error: "Query param 'name' is required" });
-    }
-    const cities = await searchCitiesByName(req.query.name);
-    res.json(cities);
   } catch (e) {
     const errorMessage = getErrorMessage(e);
     if (errorMessage === CityError.NotFound) {

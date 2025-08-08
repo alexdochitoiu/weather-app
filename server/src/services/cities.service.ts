@@ -26,6 +26,32 @@ export function addCity(city: City): Promise<number> {
   });
 }
 
+export function getAllCities(): Promise<City[]> {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT * FROM cities
+    `;
+    db.all(query, [], (err, rows) => {
+      if (err) return reject(err);
+      resolve(rows as City[]);
+    });
+  });
+}
+
+export function searchCitiesByName(name: string): Promise<City[]> {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT * FROM cities WHERE name LIKE ?
+    `;
+    db.all(query, [`%${name}%`], (err, rows) => {
+      if (rows.length === 0) return reject(new Error(CityError.NotFound));
+      if (err) return reject(err);
+      resolve(rows as City[]);
+    });
+  });
+}
+
+
 export function updateCity(
   id: number,
   updates: Pick<
@@ -62,19 +88,6 @@ export function deleteCity(id: number): Promise<number> {
       if (err) return reject(err);
       if (this.changes === 0) return reject(new Error(CityError.NotFound));
       resolve(id);
-    });
-  });
-}
-
-export function searchCitiesByName(name: string): Promise<City[]> {
-  return new Promise((resolve, reject) => {
-    const query = `
-      SELECT * FROM cities WHERE name LIKE ?
-    `;
-    db.all(query, [`%${name}%`], (err, rows) => {
-      if (rows.length === 0) return reject(new Error(CityError.NotFound));
-      if (err) return reject(err);
-      resolve(rows as City[]);
     });
   });
 }
