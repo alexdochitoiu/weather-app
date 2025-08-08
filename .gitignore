@@ -173,3 +173,23 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Docker
+.docker/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Build outputs
+build/
+dist/
+
+# IDE and Editor files
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
