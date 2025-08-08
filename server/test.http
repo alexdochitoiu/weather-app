@@ -1,0 +1,31 @@
+### Get all cities
+GET http://localhost:3000/api/cities
+
+### Get cities by name
+GET http://localhost:3000/api/cities/search?name=Paris
+
+### Add city
+POST http://localhost:3000/api/cities
+Content-Type: application/json
+
+{
+  "name": "Paris",
+  "state": "Île-de-France",
+  "country": "France",
+  "tourist_rating": 5,
+  "date_established": "-052",
+  "estimated_population": 2148000
+}
+
+### Update city
+PUT http://localhost:3000/api/cities/1
+Content-Type: application/json
+
+{
+  "tourist_rating": 4,
+  "date_established": "-052",
+  "estimated_population": 2100000
+}
+
+### Delete city
+DELETE http://localhost:3000/api/cities/1
