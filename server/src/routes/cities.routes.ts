@@ -3,7 +3,6 @@ import {
   addCity,
   updateCity,
   deleteCity,
-  searchCitiesByName,
   searchCitiesWithExternalData,
   getAllCities,
 } from "@/services/cities.service";
