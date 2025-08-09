@@ -2,6 +2,10 @@
 
 A full-stack web application for managing cities with enhanced search functionality that integrates external APIs to provide weather data, country information, and more.
 
+## Demo
+
+https://github.com/user-attachments/assets/7529b748-d97e-4187-9a89-98ca181c28ed
+
 ## 🌟 Features
 
 - **CRUD Operations**: Create, read, update, and delete cities
