@@ -18,6 +18,7 @@ export const useCitiesActions = () => {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load cities';
       dispatch({ type: 'SET_ERROR', payload: errorMessage });
       dispatch({ type: 'SET_LOADING', payload: false });
+      dispatch({ type: 'SET_INITIALIZED', payload: true });
     }
   }, [dispatch]);
 
