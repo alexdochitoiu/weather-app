@@ -10,10 +10,8 @@ A full-stack web application for managing cities with enhanced search functional
   - REST Countries API for country codes, flags, and currency information
   - OpenWeatherMap API for current weather data
 - **Modern UI**: Built with React and Material-UI for a responsive design
-- **Real-time Data**: Live weather updates and country details
-- **Docker Support**: Full containerization for easy deployment
 
-## 🛠 Technologies Used
+## 🛠 Tech Stack
 
 ### Backend
 - **Runtime**: [Bun](https://bun.sh/) - Fast JavaScript runtime and package manager
@@ -31,16 +29,11 @@ A full-stack web application for managing cities with enhanced search functional
 - **Language**: [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
 - **State Management**: React Context + useReducer pattern
 
-### DevOps & Tools
-- **Containerization**: [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
-- **Web Server**: [Nginx](https://nginx.org/) - Production web server
-- **Testing**: [Bun Test](https://bun.sh/docs/cli/test) - Built-in testing framework
-
-## 🚀 Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- [Docker](https://www.docker.com/get-started) and Docker Compose
+- [Bun](https://bun.sh/) installed locally
 - [OpenWeatherMap API Key](https://openweathermap.org/api) (free tier available)
 
 ### 1. Clone the Repository
@@ -50,53 +43,29 @@ git clone https://github.com/alexdochitoiu/weather-app.git
 cd weather-app
 ```
 
-### 2. Environment Setup
-
-Copy the environment template and add your API key:
+### 2. Backend Setup
 
 ```bash
+cd server
+bun install
 cp .env.example .env
+# Add your OpenWeatherMap API key to server/.env
+bun run start
 ```
 
-Edit `.env` and add your OpenWeatherMap API key:
+The server will start on http://localhost:3000
 
-```env
-OPENWEATHER_API_KEY=your_api_key_here
-```
-
-### 3. Run with Docker Compose
-
-#### Production Mode
+### 3. Frontend Setup
 
 ```bash
-# Build and start all services
-docker-compose up --build
-
-# Run in detached mode
-docker-compose up -d --build
+cd ui
+bun install
+bun run dev
 ```
 
-Access the application:
-- **Frontend**: http://localhost
-- **Backend API**: http://localhost:3000
-
-#### Development Mode (with hot reloading)
-
-```bash
-# Start development environment
-docker-compose -f docker-compose.dev.yml up --build
-
-# Run in detached mode
-docker-compose -f docker-compose.dev.yml up -d --build
-```
-
-Access the application:
-- **Frontend**: http://localhost:4000
-- **Backend API**: http://localhost:3000
+The UI will start on http://localhost:4000
 
 ## 📋 API Endpoints
-
-### Cities Management
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -106,9 +75,7 @@ Access the application:
 | `PUT` | `/api/cities/:id` | Update a city |
 | `DELETE` | `/api/cities/:id` | Delete a city |
 
-### Enhanced Search Response
-
-The search endpoint returns enriched city data:
+### Enhanced Search Response Example
 
 ```json
 {
@@ -132,172 +99,54 @@ The search endpoint returns enriched city data:
 }
 ```
 
-## 🔧 Development
+## 🧪 Testing
 
-### Local Development (without Docker)
-
-#### Prerequisites
-- [Bun](https://bun.sh/) installed locally
-
-#### Backend Setup
+Run server tests:
 
 ```bash
 cd server
-bun install
-cp .env.example .env
-# Add your OpenWeatherMap API key to .env
-bun run start
-```
-
-#### Frontend Setup
-
-```bash
-cd ui
-bun install
-bun run dev
-```
-
-### Running Tests
-
-```bash
-# Backend tests
-cd server
 bun test
-
-# Frontend tests (if implemented)
-cd ui
-bun test
-```
-
-## 🐳 Docker Commands
-
-### Production Commands
-
-```bash
-# Build and start services
-docker-compose up --build
-
-# Start services in background
-docker-compose up -d
-
-# Stop services
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# Rebuild specific service
-docker-compose build server
-docker-compose build ui
-```
-
-### Development Commands
-
-```bash
-# Development mode with hot reloading
-docker-compose -f docker-compose.dev.yml up --build
-
-# Stop development services
-docker-compose -f docker-compose.dev.yml down
-
-# View development logs
-docker-compose -f docker-compose.dev.yml logs -f
-```
-
-### Utility Commands
-
-```bash
-# Execute commands in running containers
-docker-compose exec server bun run test
-docker-compose exec ui bun run build
-
-# Access container shell
-docker-compose exec server sh
-docker-compose exec ui sh
-
-# Clean up (remove containers, networks, volumes)
-docker-compose down -v --remove-orphans
-docker system prune -a
 ```
 
 ## 📁 Project Structure
 
 ```
 weather-app/
-├── server/                     # Backend application
+├── server/                 # Backend application
 │   ├── src/
-│   │   ├── db/                # Database connection and initialization
-│   │   ├── routes/            # API route handlers
-│   │   ├── services/          # Business logic and external API calls
-│   │   ├── types/             # TypeScript type definitions
-│   │   ├── utils/             # Utility functions
-│   │   └── index.ts           # Server entry point
-│   ├── weather.db             # SQLite database file
-│   ├── package.json
-│   ├── Dockerfile             # Production Docker image
-│   ├── Dockerfile.dev         # Development Docker image
-│   └── .env                   # Environment variables
-├── ui/                        # Frontend application
+│   │   ├── db/            # Database connection and initialization
+│   │   ├── routes/        # API route handlers
+│   │   ├── services/      # Business logic and external API calls
+│   │   ├── types/         # TypeScript type definitions
+│   │   └── utils/         # Utility functions
+│   ├── weather.db         # SQLite database file
+│   └── package.json
+├── ui/                    # Frontend application
 │   ├── src/
-│   │   ├── components/        # React components
-│   │   ├── context/           # React context for state management
-│   │   ├── hooks/             # Custom React hooks
-│   │   ├── services/          # API service functions
-│   │   ├── types/             # TypeScript type definitions
-│   │   └── main.tsx           # React entry point
-│   ├── nginx.conf             # Nginx configuration for production
-│   ├── package.json
-│   ├── Dockerfile             # Production Docker image
-│   ├── Dockerfile.dev         # Development Docker image
-│   └── .env                   # Environment variables
-├── docker-compose.yml         # Production Docker Compose
-├── docker-compose.dev.yml     # Development Docker Compose
-├── .env                       # Environment variables template
-└── README.md                  # Project documentation
+│   │   ├── components/    # React components
+│   │   ├── context/       # React context for state management
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── services/      # API service functions
+│   │   └── types/         # TypeScript type definitions
+│   └── package.json
+└── README.md
 ```
 
-## 🌍 Environment Variables
+## 🔧 Useful Commands
 
-### Root Environment (.env)
-- `OPENWEATHER_API_KEY`: Your OpenWeatherMap API key
-
-### Server Environment (server/.env)
-- `PORT`: Server port (default: 3000)
-- `NODE_ENV`: Environment mode (development/production)
-- `OPENWEATHER_API_KEY`: OpenWeatherMap API key
-
-### UI Environment (ui/.env)
-- `VITE_API_BASE_URL`: Backend API base URL
-
-## 🔒 Security Considerations
-
-- API keys are loaded from environment variables
-- CORS is configured for allowed origins
-- Input validation on all API endpoints
-- Error handling prevents information leakage
-
-## 🚀 Deployment
-
-### Production Deployment
-
-1. **Set up environment variables** in your production environment
-2. **Build and deploy** using Docker Compose:
-
+### Backend Commands
 ```bash
-# Production deployment
-docker-compose up -d --build
-
-# Check service health
-docker-compose ps
-docker-compose logs
+cd server
+bun install          # Install dependencies
+bun run start        # Start development server
+bun test            # Run tests
 ```
 
-3. **Configure reverse proxy** (optional) for custom domains
-4. **Set up SSL certificates** for HTTPS (recommended)
-
-### Health Checks
-
-Both services include health checks:
-- **Server**: `GET /api/cities` endpoint check
-- **UI**: HTTP request to port 80
+### Frontend Commands
+```bash
+cd ui
+bun install          # Install dependencies
+bun run dev          # Start development server
+bun run build        # Build for production
+```
 
